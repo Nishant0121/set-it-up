@@ -1,10 +1,37 @@
 import inquirer from 'inquirer';
 import chalk from 'chalk';
+import gradient from 'gradient-string';
+import boxen from 'boxen';
 import { checkPrerequisites } from './utils/checkEnv.js';
 import { setupReactNative } from './engines/reactNative.js';
 
 export async function mainWizard() {
-  console.log(chalk.bold.magenta('\n🚀 Welcome to Launchpad - Your Project Forge 🛠️\n'));
+  // Clear the console for a fresh start
+  console.clear();
+
+  // Create a beautiful header
+  const title = `
+   SET - IT - UP   
+`;
+  
+  const boxenOptions = {
+    padding: 1,
+    margin: 1,
+    borderStyle: 'round',
+    borderColor: 'cyan',
+    backgroundColor: '#1b1b1b'
+  };
+
+  const welcomeMessage = boxen(
+    gradient.pastel.multiline(title) + 
+    '\n' + 
+    chalk.white('🚀 Ready to launch your next idea?'),
+    boxenOptions
+  );
+
+  console.log(welcomeMessage);
+  
+  console.log(chalk.hex('#4285F4')('  Hi there! Let\'s configure your new project.\n'));
 
   const answers = await inquirer.prompt([
     {
@@ -18,6 +45,10 @@ export async function mainWizard() {
       name: 'projectName',
       message: 'Enter your project name:',
       default: 'my-awesome-app',
+      validate: (input) => {
+          if (/^([a-z0-9\-\_])+$/.test(input)) return true;
+          return 'Project name may only include lowercase letters, numbers, underscores and hashes.';
+      }
     },
     {
       type: 'rawlist',
@@ -46,5 +77,7 @@ export async function mainWizard() {
     ]);
 
     await setupReactNative(answers, rnAnswers);
+  } else {
+      console.log(chalk.yellow('\n🚧 This feature is coming soon! Stay tuned.\n'));
   }
 }
