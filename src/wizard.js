@@ -4,6 +4,7 @@ import gradient from 'gradient-string';
 import boxen from 'boxen';
 import { checkPrerequisites } from './utils/checkEnv.js';
 import { setupReactNative } from './engines/reactNative.js';
+import { setupReact } from './engines/react.js';
 
 export async function mainWizard() {
   // Clear the console for a fresh start
@@ -38,7 +39,7 @@ export async function mainWizard() {
       type: 'rawlist',
       name: 'projectType',
       message: 'What do you want to build today?',
-      choices: ['React Native', 'Next.js (Coming Soon)', 'Custom GitHub Template'],
+      choices: ['React', 'React Native', 'Next.js (Coming Soon)', 'Custom GitHub Template'],
     },
     {
       type: 'input',
@@ -77,6 +78,35 @@ export async function mainWizard() {
     ]);
 
     await setupReactNative(answers, rnAnswers);
+  } else if (answers.projectType === 'React') {
+    await checkPrerequisites('React');
+
+    const reactAnswers = await inquirer.prompt([
+      {
+        type: 'rawlist',
+        name: 'language',
+        message: 'Which language do you want to use?',
+        choices: ['TypeScript', 'JavaScript'],
+      },
+      {
+        type: 'confirm',
+        name: 'addShadcn',
+        message: 'Would you like to setup Shadcn UI (install utils & dependencies)?',
+      },
+      {
+        type: 'confirm',
+        name: 'addRouter',
+        message: 'Would you like to add React Router DOM?',
+      },
+      {
+        type: 'confirm',
+        name: 'addContext',
+        message: 'Would you like to setup a global AppContext?',
+      }
+    ]);
+
+    await setupReact(answers, reactAnswers);
+
   } else {
       console.log(chalk.yellow('\n🚧 This feature is coming soon! Stay tuned.\n'));
   }

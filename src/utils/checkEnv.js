@@ -3,7 +3,8 @@ import chalk from 'chalk';
 
 export async function checkPrerequisites(type) {
   const requirements = {
-    'React Native': ['node', 'git', 'npm', 'java'],
+    'React Native': ['node', 'git', 'npm', 'pod', 'java'],
+    'React': ['node', 'git', 'npm'],
     'Next.js': ['node', 'git']
   };
 
