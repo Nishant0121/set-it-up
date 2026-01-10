@@ -1,12 +1,16 @@
 import commandExists from 'command-exists';
 import chalk from 'chalk';
 
-export async function checkPrerequisites(type) {
+export async function checkPrerequisites(type, options = {}) {
   const requirements = {
-    'React Native': ['node', 'git', 'npm', 'pod', 'java'],
+    'React Native': ['node', 'git', 'npm', 'java'],
     'React': ['node', 'git', 'npm'],
     'Next.js': ['node', 'git']
   };
+
+  if (type === 'React Native' && options.targetPlatform !== 'Android') {
+    requirements['React Native'].push('pod');
+  }
 
   console.log(chalk.blue('\n🔍 Checking prerequisites...'));
 

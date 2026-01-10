@@ -60,7 +60,16 @@ export async function mainWizard() {
   ]);
 
   if (answers.projectType === 'React Native') {
-    await checkPrerequisites('React Native');
+    const platformAnswer = await inquirer.prompt([
+      {
+        type: 'rawlist',
+        name: 'targetPlatform',
+        message: 'Which platform do you want to target?',
+        choices: ['Android', 'iOS', 'Both'],
+      }
+    ]);
+
+    await checkPrerequisites('React Native', { targetPlatform: platformAnswer.targetPlatform });
 
     // Additional RN specific questions
     const rnAnswers = await inquirer.prompt([
@@ -76,6 +85,8 @@ export async function mainWizard() {
         message: 'Would you like to add React Navigation setup?',
       }
     ]);
+
+    Object.assign(rnAnswers, platformAnswer);
 
     await setupReactNative(answers, rnAnswers);
   } else if (answers.projectType === 'React') {
