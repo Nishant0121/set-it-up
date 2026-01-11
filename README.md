@@ -36,10 +36,10 @@ npx @nishant0121/set-it-up
 
 ## Usage
 
-Run the setup command in your terminal:
+Run the tool in your terminal:
 
 ```bash
-setup
+forge
 ```
 
 Follow the prompts to:
