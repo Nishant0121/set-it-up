@@ -14,7 +14,7 @@ export async function mainWizard() {
   const title = `
    SET - IT - UP   
 `;
-  
+
   const boxenOptions = {
     padding: 1,
     margin: 1,
@@ -24,14 +24,14 @@ export async function mainWizard() {
   };
 
   const welcomeMessage = boxen(
-    gradient.pastel.multiline(title) + 
-    '\n' + 
+    gradient.pastel.multiline(title) +
+    '\n' +
     chalk.white('🚀 Ready to launch your next idea?'),
     boxenOptions
   );
 
   console.log(welcomeMessage);
-  
+
   console.log(chalk.hex('#4285F4')('  Hi there! Let\'s configure your new project.\n'));
 
   const answers = await inquirer.prompt([
@@ -47,8 +47,8 @@ export async function mainWizard() {
       message: 'Enter your project name:',
       default: 'my-awesome-app',
       validate: (input) => {
-          if (/^([a-z0-9\-\_])+$/.test(input)) return true;
-          return 'Project name may only include lowercase letters, numbers, underscores and hashes.';
+        if (/^([a-z0-9\-\_])+$/.test(input)) return true;
+        return 'Project name may only include lowercase letters, numbers, underscores and hashes.';
       }
     },
     {
@@ -119,6 +119,6 @@ export async function mainWizard() {
     await setupReact(answers, reactAnswers);
 
   } else {
-      console.log(chalk.yellow('\n🚧 This feature is coming soon! Stay tuned.\n'));
+    console.log(chalk.yellow('\n🚧 This feature is coming soon! Stay tuned.\n'));
   }
 }

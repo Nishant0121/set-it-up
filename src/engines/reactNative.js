@@ -46,14 +46,28 @@ export async function setupReactNative(answers, rnAnswers) {
 
       spinner.text = 'Configuring Navigation...';
       
-      const templateFileName = isTypescript ? 'navigation.tsx' : 'navigation.jsx';
-      const templatePath = path.join(__dirname, '..', 'templates', 'reactNative', templateFileName);
-      
-      const content = await fs.readFile(templatePath, 'utf8');
+      // Create modular folder structure
+      const srcDir = path.join(projectName, 'src');
+      const pagesDir = path.join(srcDir, 'pages');
+      const componentsDir = path.join(srcDir, 'components');
 
-      const targetPath = isTypescript ? appTsxPath : appJsxPath;
-      
-      await fs.writeFile(targetPath, content);
+      await fs.ensureDir(pagesDir);
+      await fs.ensureDir(componentsDir);
+
+      const ext = isTypescript ? 'tsx' : 'jsx';
+      const templateBase = path.join(__dirname, '..', 'templates', 'reactNative', 'modular');
+
+      // Copy App file
+      const appContent = await fs.readFile(path.join(templateBase, `App.${ext}`), 'utf8');
+      const targetAppPath = isTypescript ? appTsxPath : appJsxPath;
+      await fs.writeFile(targetAppPath, appContent);
+
+      // Copy Screens
+      const homeContent = await fs.readFile(path.join(templateBase, 'pages', `HomeScreen.${ext}`), 'utf8');
+      await fs.writeFile(path.join(pagesDir, `HomeScreen.${ext}`), homeContent);
+
+      const detailsContent = await fs.readFile(path.join(templateBase, 'pages', `DetailsScreen.${ext}`), 'utf8');
+      await fs.writeFile(path.join(pagesDir, `DetailsScreen.${ext}`), detailsContent);
     }
 
     spinner.succeed(chalk.green(`Project ${projectName} created successfully! 🚀`));
