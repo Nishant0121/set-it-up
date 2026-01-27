@@ -5,6 +5,7 @@ import boxen from 'boxen';
 import { checkPrerequisites } from './utils/checkEnv.js';
 import { setupReactNative } from './engines/reactNative.js';
 import { setupReact } from './engines/react.js';
+import { setupExpress } from './engines/express.js';
 
 export async function mainWizard() {
   // Clear the console for a fresh start
@@ -39,7 +40,7 @@ export async function mainWizard() {
       type: 'rawlist',
       name: 'projectType',
       message: 'What do you want to build today?',
-      choices: ['React', 'React Native', 'Next.js (Coming Soon)', 'Custom GitHub Template'],
+      choices: ['React', 'React Native', 'Express.js', 'Next.js (Coming Soon)', 'Custom GitHub Template'],
     },
     {
       type: 'input',
@@ -117,6 +118,18 @@ export async function mainWizard() {
     ]);
 
     await setupReact(answers, reactAnswers);
+
+  } else if (answers.projectType === 'Express.js') {
+    const expressAnswers = await inquirer.prompt([
+      {
+        type: 'rawlist',
+        name: 'language',
+        message: 'Which language do you want to use?',
+        choices: ['TypeScript', 'JavaScript'],
+      }
+    ]);
+
+    await setupExpress(answers, expressAnswers);
 
   } else {
     console.log(chalk.yellow('\n🚧 This feature is coming soon! Stay tuned.\n'));
