@@ -1,6 +1,6 @@
 {
   "name": "@nishant0121/set-it-up",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A high-performance CLI tool to bootstrap and forge new projects with pre-configured templates, prerequisite checking, and interactive setup.",
   "license": "ISC",
   "author": "Nishant Patil",
