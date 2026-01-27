@@ -51,8 +51,8 @@ export default App;
 };
 
 export const getAppContext = (options) => {
-  const { isTypescript, addShadcn } = options;
-  const useTs = isTypescript || addShadcn;
+  const { isTypescript } = options;
+  const useTs = isTypescript;
   
   return `import React, { createContext, useContext, useState${useTs ? ', ReactNode' : ''} } from 'react';
 

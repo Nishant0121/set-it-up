@@ -130,7 +130,7 @@ export async function setupReact(answers, reactAnswers) {
 
     // Rewrite App.jsx/tsx and create structure
     spinner.text = 'Generating Project Structure...';
-    await generateProjectStructure(projectName, (isTypescript || reactAnswers.addShadcn), reactAnswers);
+    await generateProjectStructure(projectName, isTypescript, reactAnswers);
 
     // FINAL STEP: Downgrade to JS if requested but forced to TS
     if (!isTypescript && reactAnswers.addShadcn) {
@@ -181,30 +181,99 @@ async function generateProjectStructure(projectName, isTypescript, answers) {
 async function convertToJs(projectName) {
     const srcDir = path.join(projectName, 'src');
     
-    // Recursive function to rename .tsx -> .jsx and .ts -> .js
-    async function renameFiles(dir) {
-        const items = await fs.readdir(dir);
-        for (const item of items) {
-            const fullPath = path.join(dir, item);
-            const stat = await fs.stat(fullPath);
-            
-            if (stat.isDirectory()) {
-                await renameFiles(fullPath);
-            } else {
-                if (item.endsWith('.tsx')) {
-                    await fs.rename(fullPath, fullPath.replace('.tsx', '.jsx'));
-                } else if (item.endsWith('.ts') && !item.endsWith('.d.ts') && item !== 'vite.config.ts') {
-                     // Careful not to rename config files if they are in root (this is in src)
-                     await fs.rename(fullPath, fullPath.replace('.ts', '.js'));
-                }
+    // 1. Handle main.tsx -> main.jsx
+    const mainTsx = path.join(srcDir, 'main.tsx');
+    const mainJsx = path.join(srcDir, 'main.jsx');
+    
+    if (await fs.pathExists(mainTsx)) {
+        try {
+            await execa('npx', [
+                'esbuild', 
+                mainTsx, 
+                '--jsx=preserve', 
+                `--outfile=${mainJsx}`,
+                '--format=esm'
+            ], { cwd: process.cwd() });
+            await fs.remove(mainTsx);
+
+            // Fix imports in main.jsx (esbuild preserves local imports)
+            let mainContent = await fs.readFile(mainJsx, 'utf8');
+            mainContent = mainContent.replace(/from\s+['"]\.\/App\.tsx['"]/g, 'from "./App"');
+            await fs.writeFile(mainJsx, mainContent);
+
+        } catch (e) {
+            console.warn(`Failed to convert main.tsx: ${e.message}`);
+        }
+    }
+
+    // 2. Handle App.tsx (Delete if App.jsx exists, otherwise convert)
+    const appTsx = path.join(srcDir, 'App.tsx');
+    const appJsx = path.join(srcDir, 'App.jsx');
+
+    if (await fs.pathExists(appTsx)) {
+        if (await fs.pathExists(appJsx)) {
+            // We generated a custom App.jsx, so the default App.tsx is garbage.
+            await fs.remove(appTsx);
+        } else {
+            // Fallback: convert App.tsx if we didn't generate App.jsx
+            try {
+                await execa('npx', [
+                    'esbuild', 
+                    appTsx, 
+                    '--jsx=preserve', 
+                    `--outfile=${appJsx}`,
+                    '--format=esm'
+                ], { cwd: process.cwd() });
+                await fs.remove(appTsx);
+            } catch (e) {
+                console.warn(`Failed to convert App.tsx: ${e.message}`);
             }
         }
     }
 
-    await renameFiles(srcDir);
+    // 3. Remove vite-env.d.ts
+    const viteEnv = path.join(srcDir, 'vite-env.d.ts');
+    if (await fs.pathExists(viteEnv)) {
+        await fs.remove(viteEnv);
+    }
+
+    // 4. Handle vite.config.ts -> vite.config.js
+    const viteConfigTs = path.join(projectName, 'vite.config.ts');
+    const viteConfigJs = path.join(projectName, 'vite.config.js');
     
-    // Also rename root files if necessary
-    const mainTsx = path.join(projectName, 'src', 'main.tsx'); // Standard Vite entry
-    const mainJsx = path.join(projectName, 'src', 'main.jsx');
-    if (await fs.pathExists(mainTsx)) await fs.rename(mainTsx, mainJsx);
+    if (await fs.pathExists(viteConfigTs)) {
+         try {
+            await execa('npx', [
+                'esbuild', 
+                viteConfigTs, 
+                `--outfile=${viteConfigJs}`,
+                '--format=esm'
+            ], { cwd: process.cwd() });
+            await fs.remove(viteConfigTs);
+         } catch (e) {
+             console.warn(`Failed to convert vite.config.ts: ${e.message}`);
+         }
+    }
+
+    // Update index.html to reference main.jsx
+    const indexHtmlPath = path.join(projectName, 'index.html');
+    if (await fs.pathExists(indexHtmlPath)) {
+        let indexHtml = await fs.readFile(indexHtmlPath, 'utf8');
+        indexHtml = indexHtml.replace('/src/main.tsx', '/src/main.jsx');
+        await fs.writeFile(indexHtmlPath, indexHtml);
+    }
+
+    // Clean up TS configs and create jsconfig.json
+    await fs.remove(path.join(projectName, 'tsconfig.json'));
+    await fs.remove(path.join(projectName, 'tsconfig.app.json'));
+    await fs.remove(path.join(projectName, 'tsconfig.node.json'));
+
+    const jsConfig = {
+        "compilerOptions": {
+            "paths": {
+                "@/*": ["./src/*"]
+            }
+        }
+    };
+    await fs.writeJson(path.join(projectName, 'jsconfig.json'), jsConfig, { spaces: 2 });
 }
