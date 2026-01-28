@@ -126,6 +126,12 @@ export async function mainWizard() {
         name: 'language',
         message: 'Which language do you want to use?',
         choices: ['TypeScript', 'JavaScript'],
+      },
+      {
+        type: 'rawlist',
+        name: 'database',
+        message: 'Which database do you want to use?',
+        choices: ['None', 'MongoDB (Mongoose)', 'PostgreSQL (Prisma)'],
       }
     ]);
 

@@ -40,7 +40,17 @@ The `forge` command launches an intuitive,inquirer-based terminal wizard that as
 - **Safe Area Handling:** Implements `react-native-safe-area-context` with `SafeAreaProvider` wrapping the app and `SafeAreaView` in screens.
 - **Polished Templates:** The generated starter screens (`HomeScreen`, `DetailsScreen`) are not blank white pages. They feature modern design, cards, shadows, and proper typography, giving you a beautiful starting point.
 
-### 4. Smart & Safe
+### 4. Express.js (Backend) Mastery
+- **Modular Architecture:** Encourages clean code with a dedicated folder structure:
+  - `src/routes/` (Endpoint definitions)
+  - `src/controllers/` (Business logic)
+  - `src/config/` (Database & client configurations)
+- **Database Integration:** First-class support for **MongoDB (Mongoose)** and **PostgreSQL (Prisma ORM)**. The CLI generates connection logic and ensures the server only starts after a successful DB connection.
+- **Modern ESM:** Strictly uses `import`/`export` syntax and `"type": "module"` for a modern Node.js experience.
+- **TypeScript Ready:** Seamless integration using `tsx` for instant execution and watch modes, avoiding common ESM/TS configuration pitfalls.
+- **Pre-configured Middleware:** Comes out of the box with `cors`, `helmet` (security), `morgan` (logging), and `dotenv`.
+
+### 5. Smart & Safe
 - **Prerequisite Checking:** Scans your environment for Node.js, Git, and other tools before starting to prevent mid-install failures.
 - **Package Manager Agnostic:** Works seamlessly with `npm`, `yarn`, and `pnpm`.
 - **Lightning Fast Conversion:** Uses `esbuild` for instant TypeScript to JavaScript transpilation when bridging Shadcn UI into JS projects.
@@ -49,12 +59,13 @@ The `forge` command launches an intuitive,inquirer-based terminal wizard that as
 
 - **CLI Engine:** Node.js, Commander, Inquirer, Ora (spinners), Chalk (styling), Boxen, Gradient-String.
 - **Automation:** Execa (process execution), FS-Extra (file system), Esbuild (fast transpilation).
-- **Templates:** React (Vite), React Native (CLI), Tailwind CSS v4, React Navigation, React Router DOM.
+- **Templates:** React (Vite), React Native (CLI), Express.js, Tailwind CSS v4, Mongoose, Prisma, tsx.
 
 ## Roadmap (Coming Soon)
 - **Next.js Support:** Full App Router scaffolding with advanced features.
 - **Custom GitHub Templates:** Forge projects from your own private or public repositories.
-- **Backend Forging:** Express.js and FastAPI starter templates.
+- **Authentication Boilerplates:** Ready-to-use JWT or NextAuth configurations.
+- **FastAPI Forging:** Python-based backend starter templates.
 
 ## Get Started
 

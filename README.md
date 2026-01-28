@@ -18,6 +18,13 @@ set-it-up is a high-performance CLI tool designed to bootstrap and forge new pro
   - Rapid initialization with @react-native-community/cli.
   - Full support for both TypeScript and JavaScript.
   - Automated React Navigation integration with boilerplate code.
+- Express.js Support:
+  - Modular project structure (routes, controllers, config).
+  - Modern ESM (`import`/`export`) setup with `"type": "module"`.
+  - TypeScript support using `tsx` for high performance and ESM compatibility.
+  - Optional Database integration: **MongoDB (Mongoose)** or **PostgreSQL (Prisma)**.
+  - Automatic `.env` generation and database connection logic.
+  - Pre-configured security (Helmet) and logging (Morgan) middleware.
 - Smart Defaults: Supports npm, yarn, and pnpm based on user preference.
 
 ## Installation
@@ -44,13 +51,27 @@ forge
 
 Follow the prompts to:
 
-1. Select your project type (React or React Native).
+1. Select your project type (React, React Native, or Express.js).
 2. Provide a project name.
 3. Choose your preferred package manager.
 4. Select language (TypeScript or JavaScript).
-5. Configure additional features (Shadcn UI, Router, Context, Navigation).
+5. Configure additional features (Database, Shadcn UI, Router, etc.).
 
-### Example Workflow
+### Example Workflow (Express.js)
+
+```text
+SET-IT-UP
+
+Hi there! Let's configure your new project.
+
+? What do you want to build today? Express.js
+? Enter your project name: my-api
+? Select your preferred package manager: pnpm
+? Which language do you want to use? TypeScript
+? Which database do you want to use? PostgreSQL (Prisma)
+```
+
+### Example Workflow (React)
 
 ```text
 SET-IT-UP
@@ -64,6 +85,21 @@ Hi there! Let's configure your new project.
 ? Would you like to setup Shadcn UI? Yes
 ? Would you like to add React Router DOM? Yes
 ? Would you like to setup a global AppContext? Yes
+```
+
+### Example Workflow (React Native)
+
+```text
+SET-IT-UP
+
+Hi there! Let's configure your new project.
+
+? What do you want to build today? React Native
+? Enter your project name: my-mobile-app
+? Select your preferred package manager: yarn
+? Which platform do you want to target? Both
+? Which language do you want to use? TypeScript
+? Would you like to add React Navigation setup? Yes
 ```
 
 ## Contributing

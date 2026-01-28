@@ -1,4 +1,4 @@
-export const getPackageJson = (projectName, isTypescript) => {
+export const getPackageJson = (projectName, isTypescript, database) => {
   const commonScripts = {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js"
@@ -18,6 +18,12 @@ export const getPackageJson = (projectName, isTypescript) => {
     "morgan": "^1.10.0"
   };
 
+  if (database === 'MongoDB (Mongoose)') {
+    dependencies["mongoose"] = "^8.0.3";
+  } else if (database === 'PostgreSQL (Prisma)') {
+    dependencies["@prisma/client"] = "^5.7.1";
+  }
+
   const devDependencies = isTypescript ? {
     "typescript": "^5.3.3",
     "tsx": "^4.7.0",
@@ -28,6 +34,14 @@ export const getPackageJson = (projectName, isTypescript) => {
   } : {
     "nodemon": "^3.0.2"
   };
+
+  if (isTypescript && database === 'MongoDB (Mongoose)') {
+    devDependencies["@types/mongoose"] = "^5.11.97";
+  }
+
+  if (database === 'PostgreSQL (Prisma)') {
+    devDependencies["prisma"] = "^5.7.1";
+  }
 
   return JSON.stringify({
     name: projectName,
